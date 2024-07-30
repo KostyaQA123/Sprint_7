@@ -1,6 +1,7 @@
 import pytest
 import allure
 from api.api_requests import CourierApiEndpoints
+from utils.expected_data import EXP_DATA
 
 
 @allure.epic('Test Courier Creation')
@@ -11,7 +12,7 @@ class TestCourierCreation:
     def test_create_courier_success(self, courier_data):
         response = self.api_client.create_courier(courier_data)
         assert response.status_code == 201
-        assert response.json() == {"ok": True}
+        assert response.json() == EXP_DATA['success_courier_creation']
 
     @allure.title('Создание курьера без обязательных параметров')
     @pytest.mark.parametrize("missing_field", ["login", "password"])
@@ -22,7 +23,7 @@ class TestCourierCreation:
         response = self.api_client.create_courier(incomplete_data)
 
         assert response.status_code == 400
-        assert "Недостаточно данных для создания учетной записи" in response.text
+        assert EXP_DATA['missing_creation_data'] in response.text
 
     @allure.title('Создание существующего курьера')
     def test_create_courier_duplicate(self, courier_data):
@@ -31,4 +32,4 @@ class TestCourierCreation:
 
         response = self.api_client.create_courier(courier_data)
         assert response.status_code == 409
-        assert "Этот логин уже используется" in response.text
+        assert EXP_DATA['login_already_in_use'] in response.text

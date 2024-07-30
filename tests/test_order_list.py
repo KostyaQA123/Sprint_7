@@ -2,6 +2,7 @@ import allure
 import pytest
 import json
 from api.api_requests import ScooterApiEndpoints
+from utils.expected_data import EXP_DATA
 
 
 @allure.epic('Test Order List')
@@ -21,7 +22,7 @@ class TestOrderList:
         params = {'courierId': 999999999}
         response = self.api_client.get_orders(params=params)
         assert response.status_code == 404
-        assert "Курьер с идентификатором" in response.text
+        assert EXP_DATA['undefined_courier_id'] in response.text
 
     @allure.title('Получение заказов с пагинацией')
     @pytest.mark.parametrize("limit, page", [(10, 0), (20, 1)])

@@ -14,30 +14,20 @@ def courier_data():
 
 
 @pytest.fixture
-def courier():
+def courier(courier_data):
     api_client = CourierApiEndpoints()
-    courier_data = {
-        "login": generate_random_string(),
-        "password": generate_random_string(),
-        "firstName": generate_random_string()
-    }
-    create_response = api_client.create_courier(courier_data)
-    assert create_response.status_code == 201
-    assert "ok" in create_response.json()
+    api_client.create_courier(courier_data)
 
     login_data = {
         "login": courier_data["login"],
         "password": courier_data["password"]
     }
     login_response = api_client.login_courier(login_data)
-    assert login_response.status_code == 200
     courier_id = login_response.json()["id"]
 
     yield courier_data
 
-    delete_response = api_client.delete_courier(courier_id)
-    assert delete_response.status_code == 200
-    assert delete_response.json()["ok"]
+    api_client.delete_courier(courier_id)
 
 
 @pytest.fixture

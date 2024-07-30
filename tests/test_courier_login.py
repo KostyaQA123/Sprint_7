@@ -1,6 +1,7 @@
 import allure
 import pytest
 from api.api_requests import CourierApiEndpoints
+from utils.expected_data import EXP_DATA
 
 
 @allure.epic('Test Courier Login')
@@ -21,7 +22,7 @@ class TestCourierLogin:
 
         response = self.api_client.login_courier(incomplete_data)
         assert response.status_code == 400
-        assert "Недостаточно данных для входа" in response.text
+        assert EXP_DATA['missing_login_data'] in response.text
 
     @allure.title('Логин курьера с некорректным паролем')
     def test_courier_login_with_incorrect_password(self, courier):
@@ -30,7 +31,7 @@ class TestCourierLogin:
 
         response = self.api_client.login_courier(wrong_password_data)
         assert response.status_code == 404
-        assert "Учетная запись не найдена" in response.text
+        assert EXP_DATA['account_not_found'] in response.text
 
     @allure.title('Логин несуществующего курьера')
     def test_courier_login_nonexistent_courier(self):
@@ -41,4 +42,4 @@ class TestCourierLogin:
 
         response = self.api_client.login_courier(nonexistent_courier_data)
         assert response.status_code == 404
-        assert "Учетная запись не найдена" in response.text
+        assert EXP_DATA['account_not_found'] in response.text
